@@ -9,4 +9,8 @@ TEST(card, Card) {
     Card card(8);
     EXPECT_EQ(card.suit(), Suit::kS);
     EXPECT_EQ(card.rank(), Rank::k3);
+
+    card = Card(Suit::kS, Rank::k3);
+    EXPECT_EQ(card.suit(), Suit::kS);
+    EXPECT_EQ(card.rank(), Rank::k3);
 }

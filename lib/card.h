@@ -15,8 +15,10 @@ namespace poker {
         unsigned id_;
     public:
         explicit Card(unsigned id);
+        explicit Card(Suit suit, Rank rank);
         [[nodiscard]] Suit suit() const;
         [[nodiscard]] Rank rank() const;
+        bool operator==(const Card& other) const;
     };
 }
 
