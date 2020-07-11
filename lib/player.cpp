@@ -4,8 +4,8 @@
 #include <utility>
 
 namespace poker {
-    Player::Player(int stack, std::vector<Card> cards)
-            : stack_(stack), bet_(0), folded_(false), hall_cards_(std::move(cards)) {}
+    Player::Player(int stack, const std::array<Card,2>& cards)
+            : stack_(stack), bet_(0), folded_(false), hall_cards_(cards) {}
 
     void Player::Bet(int size) {
         assert(stack_ >= size);
@@ -39,7 +39,7 @@ namespace poker {
         return folded_;
     }
 
-    const std::vector<Card>& Player::hall_cards() const {
+    const std::array<Card,2>& Player::hall_cards() const {
         return hall_cards_;
     }
 }

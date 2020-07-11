@@ -7,7 +7,7 @@ using namespace poker;
 
 TEST(player, Player) {
     int stack = 10000;
-    std::vector<Card> cards{Card(19), Card(20)};
+    std::array<Card,2> cards{Card(19), Card(20)};
     Player player(stack, cards);
     EXPECT_EQ(player.stack(), stack);
     EXPECT_EQ(player.bet(), 0);
