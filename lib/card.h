@@ -1,6 +1,8 @@
 #ifndef POKER_CARD_H
 #define POKER_CARD_H
 
+#include <vector>
+
 namespace poker {
     enum class Suit {
         kS, kH, kD, kC
@@ -19,6 +21,12 @@ namespace poker {
         [[nodiscard]] Suit suit() const;
         [[nodiscard]] Rank rank() const;
         bool operator==(const Card& other) const;
+        bool operator<(const Card& other) const;
+    };
+
+    struct CardSet {
+        std::vector<Card> cards;
+        CardSet();
     };
 }
 

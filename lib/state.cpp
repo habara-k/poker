@@ -7,7 +7,7 @@ namespace poker {
     State::State(int bb, int stack,
                 const std::vector<std::array<Card,2>>& hall_cards,
                 const std::array<Card,5>& community_cards)
-                : community_cards_(community_cards), pot_(0),
+                : all_community_cards_(community_cards), pot_(0),
                   stage_(Stage::kPreFlop), bb_(bb) {
         for (const auto& cards : hall_cards) {
             players_.emplace_back(stack, cards);
@@ -54,6 +54,8 @@ namespace poker {
 
         assert(player_id == next_player_id_);
         assert(!terminal_player_id_ or terminal_player_id_.value() != player_id);
+
+        trajectory_.emplace_back(player_id, action);
 
         Player& player = players_[player_id];
 
@@ -128,14 +130,31 @@ namespace poker {
     const std::vector<Player>& State::players() const {
         return players_;
     }
-    const std::array<Card,5>& State::community_cards() const {
-        return community_cards_;
+    std::vector<Card> State::community_cards() const {
+        switch (stage_) {
+            case Stage::kPreFlop:
+                return {all_community_cards_.begin(), all_community_cards_.begin()};
+            case Stage::kFlop:
+                return {all_community_cards_.begin(), all_community_cards_.begin() + 3};
+            case Stage::kTurn:
+                return {all_community_cards_.begin(), all_community_cards_.begin() + 4};
+            case Stage::kRiver:
+                return {all_community_cards_.begin(), all_community_cards_.begin() + 5};
+            default:
+                assert(false);
+        }
     }
+    //const std::array<Card,5>& State::all_community_cards() const {
+    //    return all_community_cards_;
+    //}
     int State::pot() const {
         return pot_;
     }
     Stage State::stage() const {
         return stage_;
+    }
+    const std::vector<ActionRecord>& State::trajectory() const {
+        return trajectory_;
     }
 
 

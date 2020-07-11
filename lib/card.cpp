@@ -1,5 +1,8 @@
 #include "card.h"
 
+#include <iostream>
+#include <numeric>
+
 namespace poker {
     Card::Card(unsigned id) : id_(id) {}
 
@@ -16,5 +19,16 @@ namespace poker {
 
     bool Card::operator==(const Card& other) const {
         return id_ == other.id_;
+    }
+
+    bool Card::operator<(const Card& other) const {
+        return id_ < other.id_;
+    }
+
+    CardSet::CardSet() {
+        std::cerr << "CardSet::CardSet" << std::endl;
+        for (int i = 0; i < 52; ++i) {
+            cards.push_back(static_cast<Card>(i));
+        }
     }
 }
