@@ -20,6 +20,7 @@ namespace poker {
                 shuffled[3],
                 shuffled[4]};
         std::vector<std::array<Card,2>> hall_cards;
+        hall_cards.reserve(player_num);
         for (int i = 0; i < player_num; ++i) {
             hall_cards.push_back({shuffled[5 + 2*i],
                                   shuffled[5 + 2*i + 1]});

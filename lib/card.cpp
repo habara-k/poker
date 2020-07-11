@@ -27,6 +27,7 @@ namespace poker {
 
     CardSet::CardSet() {
         std::cerr << "CardSet::CardSet" << std::endl;
+        cards.reserve(52);
         for (int i = 0; i < 52; ++i) {
             cards.push_back(static_cast<Card>(i));
         }
