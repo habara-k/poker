@@ -9,8 +9,8 @@ namespace poker {
     };
 
     enum class Rank {
-        kA, k2, k3, k4, k5, k6, k7,
-        k8, k9, kT, kJ, kQ, kK
+        kA, kK, kQ, kJ, kT, k9,
+        k8, k7, k6, k5, k4, k3, k2
     };
 
     class Card {
@@ -22,6 +22,10 @@ namespace poker {
         [[nodiscard]] Rank rank() const;
         bool operator==(const Card& other) const;
         bool operator<(const Card& other) const;
+
+        struct RankCompare {
+            bool operator() (const Card& lhs, const Card& rhs) const;
+        };
     };
 
     struct CardSet {

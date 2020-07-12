@@ -25,6 +25,10 @@ namespace poker {
         return id_ < other.id_;
     }
 
+    bool Card::RankCompare::operator() (const Card& lhs, const Card& rhs) const {
+        return lhs.rank() < rhs.rank();
+    }
+
     CardSet::CardSet() {
         std::cerr << "CardSet::CardSet" << std::endl;
         cards.reserve(52);
