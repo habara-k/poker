@@ -8,7 +8,10 @@
 #include "stage.h"
 #include "hand.h"
 #include "action.h"
+#include "record.h"
 #include "player.h"
+#include "result.h"
+#include "observable.h"
 
 namespace poker {
     class Visualizer {
@@ -23,10 +26,9 @@ namespace poker {
             std::array<std::string, 4> ret;
             for (const Card& card : cards) {
                 std::array<std::string, 4> strs = ToStrings(card);
-                ret[0] += strs[0];
-                ret[1] += strs[1];
-                ret[2] += strs[2];
-                ret[3] += strs[3];
+                for (int i = 0; i < 4; ++i) {
+                    ret[i] += strs[i];
+                }
             }
             return ret;
         }
@@ -36,10 +38,9 @@ namespace poker {
             std::array<std::string, 4> ret;
             for (const std::optional<Card>& card : cards) {
                 std::array<std::string, 4> strs = ToStrings(card);
-                ret[0] += strs[0];
-                ret[1] += strs[1];
-                ret[2] += strs[2];
-                ret[3] += strs[3];
+                for (int i = 0; i < 4; ++i) {
+                    ret[i] += strs[i];
+                }
             }
             return ret;
         }
@@ -48,7 +49,14 @@ namespace poker {
         [[nodiscard]] static std::string ToString(HandCategory category);
         [[nodiscard]] static std::string ToString(ActionType action_type);
         [[nodiscard]] static std::string ToString(const Action& action);
+        [[nodiscard]] static std::string ToString(const Record& record);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Player& player);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const Player& player, bool is_you);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const std::vector<Player>& players);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const std::vector<Player>& players, int player_id);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const Hand& hand);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const Result& result);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const Observable& observable);
     };
 }
 

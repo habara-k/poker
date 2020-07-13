@@ -1,6 +1,9 @@
 #include "observable.h"
 
 namespace poker {
+    Observable::Observable(const State &state)
+            : state_(state), players_(state.players()) {}
+
     Observable::Observable(const State& state, int player_id)
             : state_(state), players_(state.players()), player_id_(player_id) {
         for (int i = 0; i < players_.size(); ++i) {
@@ -24,7 +27,13 @@ namespace poker {
     Stage Observable::stage() const {
         return state_.stage();
     }
-    const std::vector<ActionRecord>& Observable::trajectory() const {
-        return state_.trajectory();
+    std::vector<Record>::const_iterator Observable::trajectory() const {
+        return state_.trajectory(player_id_);
+    }
+    std::vector<Record>::const_iterator Observable::trajectory_end() const {
+        return state_.trajectory_end();
+    }
+    const Result& Observable::result() const {
+        return state_.result();
     }
 }

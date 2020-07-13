@@ -7,8 +7,9 @@
 #include "player.h"
 #include "action.h"
 #include "action_range.h"
-#include "action_record.h"
+#include "record.h"
 #include "stage.h"
+#include "result.h"
 
 namespace poker {
     class State {
@@ -21,7 +22,9 @@ namespace poker {
         int next_player_id_;
         bool someone_all_in_;
         std::optional<int> terminal_player_id_;
-        std::vector<ActionRecord> trajectory_;
+        std::vector<Record> trajectory_;
+        std::vector<int> bookmark_;
+        Result result_;
         const int bb_;
 
     public:
@@ -40,7 +43,10 @@ namespace poker {
         //[[nodiscard]]  std::array<Card,5>& all_community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
-        [[nodiscard]] const std::vector<ActionRecord>& trajectory() const;
+        //[[nodiscard]] const std::vector<Record>& trajectory() const;
+        [[nodiscard]] std::vector<Record>::const_iterator trajectory(int player_id) const;
+        [[nodiscard]] std::vector<Record>::const_iterator trajectory_end() const;
+        [[nodiscard]] const Result& result() const;
 
     private:
         [[nodiscard]] int remained_players() const;

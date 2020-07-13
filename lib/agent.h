@@ -2,32 +2,36 @@
 #define POKER_AGENT_H
 
 #include "observable.h"
+#include "result.h"
 
 namespace poker {
     class Agent {
     public:
-        Agent();
         virtual ~Agent() = default;
 
         virtual Action ChooseAction(
                 const Observable &observable,
                 const std::vector<ActionRange> &possible_actions) = 0;
+
+        virtual void Reward(const Observable& observable) = 0;
     };
 
     class CheckCallAgent : public Agent {
     public:
-        CheckCallAgent();
         Action ChooseAction(
                 const Observable &observable,
                 const std::vector<ActionRange> &possible_actions) final;
+
+        void Reward(const Observable& observable) final;
     };
 
     class UserAgent : public Agent {
     public:
-        UserAgent();
         Action ChooseAction(
                 const Observable &observable,
                 const std::vector<ActionRange> &possible_actions) final;
+
+        void Reward(const Observable& observable) final;
     };
 }
 

@@ -7,10 +7,6 @@
 #include "visualizer.h"
 
 namespace poker {
-    Agent::Agent() {}
-
-    CheckCallAgent::CheckCallAgent() {}
-
     Action CheckCallAgent::ChooseAction(
             const Observable& observable,
             const std::vector<ActionRange>& possible_actions) {
@@ -25,7 +21,8 @@ namespace poker {
         assert(false);
     }
 
-    UserAgent::UserAgent() {}
+    void CheckCallAgent::Reward(const Observable& observable) {
+    }
 
     Action UserAgent::ChooseAction(
             const Observable& observable,
@@ -34,20 +31,8 @@ namespace poker {
         // Show Observable
 
         std::cout << "======================" << std::endl;
-        std::cout << "stage: " << Visualizer::ToString(observable.stage()) << std::endl;
-        std::cout << "pot: " << observable.pot() << std::endl;
-        std::cout << "community cards:" << std::endl;
-        for (const std::string& str : Visualizer::ToStrings(observable.community_cards())) {
+        for (const std::string& str : Visualizer::ToStrings(observable)) {
             std::cout << str << std::endl;
-        }
-
-        std::cout << "you are player" << observable.player_id() << std::endl;
-        const std::vector<Player>& players = observable.players();
-        for (int i = 0; i < players.size(); ++i) {
-            std::cout << std::endl;
-            for (const std::string& str : Visualizer::ToStrings(players[i])) {
-                std::cout << str << std::endl;
-            }
         }
         std::cout << "======================" << std::endl;
 
@@ -105,5 +90,13 @@ namespace poker {
         }
 
         return Action(action_type, size);
+    }
+
+    void UserAgent::Reward(const Observable& observable) {
+        std::cout << "========Result========" << std::endl;
+        for (const std::string& str : Visualizer::ToStrings(observable.result())) {
+            std::cout << str << std::endl;
+        }
+        std::cout << "======================" << std::endl;
     }
 }

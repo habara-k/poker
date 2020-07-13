@@ -13,6 +13,7 @@ namespace poker {
         std::vector<Player> players_;
         int player_id_;
     public:
+        Observable(const State& state);
         Observable(const State& state, int player_id);
 
         [[nodiscard]] int player_id() const;
@@ -20,7 +21,10 @@ namespace poker {
         [[nodiscard]] std::array<std::optional<Card>,5> community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
-        [[nodiscard]] const std::vector<ActionRecord>& trajectory() const;
+        [[nodiscard]] std::vector<Record>::const_iterator trajectory() const;
+        [[nodiscard]] std::vector<Record>::const_iterator trajectory_end() const;
+        //[[nodiscard]] const std::vector<Record>& trajectory() const;
+        [[nodiscard]] const Result& result() const;
     };
 }
 

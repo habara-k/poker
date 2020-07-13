@@ -38,5 +38,9 @@ namespace poker {
 
             state.TakeAction(next_id, action);
         }
+
+        for (auto& agent : agents) {
+            agent->Reward(Observable(state));
+        }
     }
 }

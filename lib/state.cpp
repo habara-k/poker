@@ -14,7 +14,8 @@ namespace poker {
                 const std::vector<std::array<std::optional<Card>,2>>& hole_cards,
                 const std::array<Card,5>& all_community_cards)
                 : all_community_cards_(all_community_cards), pot_(0),
-                  stage_(Stage::kPreFlop), someone_all_in_(false), bb_(bb) {
+                  stage_(Stage::kPreFlop), someone_all_in_(false),
+                  bookmark_(hole_cards.size()), bb_(bb) {
 
         for (int id = 0; id < hole_cards.size(); ++id) {
             players_.emplace_back(id, stack, hole_cards[id]);
@@ -64,8 +65,9 @@ namespace poker {
         assert(player_id == next_player_id_);
         assert(!terminal_player_id_ or terminal_player_id_.value() != player_id);
 
-        std::cerr << "player" << player_id << " " << Visualizer::ToString(action) << std::endl;
+        std::clog << "player" << player_id << " " << Visualizer::ToString(action) << std::endl;
 
+        bookmark_[player_id] = trajectory_.size();
         trajectory_.emplace_back(player_id, action);
 
         Player& player = players_[player_id];
@@ -192,37 +194,52 @@ namespace poker {
     Stage State::stage() const {
         return stage_;
     }
-    const std::vector<ActionRecord>& State::trajectory() const {
-        return trajectory_;
+    //const std::vector<Record>& State::trajectory() const {
+    //    return trajectory_;
+    //}
+    std::vector<Record>::const_iterator State::trajectory(int player_id) const {
+        return trajectory_.begin() + bookmark_[player_id];
     }
-
+    std::vector<Record>::const_iterator State::trajectory_end() const {
+        return trajectory_.end();
+    }
+    const Result& State::result() const {
+        return result_;
+    }
 
     void State::EndHidden() {
         assert(remained_players() == 1);
 
-        for (Player& player : players_) {
-            if (player.folded()) continue;
-            pot_ += player.Collected();
-        }
-
         stage_ = Stage::kEndHidden;
+        trajectory_.emplace_back(stage_);
 
-        std::cerr << "========Result========" << std::endl;
+        // TODO: need?
+        // Show();
+
         for (int i = 0; i < players_.size(); ++i) {
             Player& player = players_[i];
             if (player.folded()) continue;
-            std::cerr << "player" << i << " が" << pot_ << " を獲得" << std::endl;
+            // player i is winner
+            result_ = Result(stage_, i, pot_);
+
+            // 勝者のpotが未回収なので, ここで回収する.
+            pot_ += player.Collected();
+
             player.Win(pot_);
-            pot_ = 0;
         }
-        std::cerr << "======================" << std::endl;
+
+        std::clog << "========Result========" << std::endl;
+        for (const std::string& str : Visualizer::ToStrings(result_)) {
+            std::clog << str << std::endl;
+        }
+        std::clog << "======================" << std::endl;
     }
 
     void State::Showdown() {
-        // TODO
         assert(remained_players() > 1);
 
         stage_ = Stage::kShowdown;
+        trajectory_.emplace_back(stage_);
 
         Show();
 
@@ -233,25 +250,25 @@ namespace poker {
             player_ids.push_back(i);
         }
 
-        std::cerr << "========Result========" << std::endl;
         std::map<int,Hand> hands;
         for (int id : player_ids) {
-            Hand hand = Hand::Create(players_[id].hole_cards(), all_community_cards_);
-            std::cerr << "player" << id << ": " << Visualizer::ToString(hand.category()) << std::endl;
-            for (const std::string& str : Visualizer::ToStrings(hand.cards())) {
-                std::cerr << str << std::endl;
-            }
-            hands.insert({id, hand});
+            hands.insert({id, Hand::Create(players_[id].hole_cards(), all_community_cards_)});
         }
 
         int winner = *std::min_element(player_ids.begin(), player_ids.end(), [&](int id0, int id1){
             return Hand::RankCompare()(hands.at(id0), hands.at(id1));
         });
 
-        std::cerr << "player" << winner << " が" << pot_ << " を獲得" << std::endl;
-        std::cerr << "======================" << std::endl;
+        result_ = Result(stage_, winner, pot_, hands);
+
         players_[winner].Win(pot_);
         pot_ = 0;
+
+        std::clog << "========Result========" << std::endl;
+        for (const std::string& str : Visualizer::ToStrings(result_)) {
+            std::clog << str << std::endl;
+        }
+        std::clog << "======================" << std::endl;
     }
 
     int State::remained_players() const {
@@ -290,14 +307,17 @@ namespace poker {
         switch (stage_) {
             case Stage::kPreFlop:
                 stage_ = Stage::kFlop;
+                trajectory_.emplace_back(stage_);
                 Show();
                 break;
             case Stage::kFlop:
                 stage_ = Stage::kTurn;
+                trajectory_.emplace_back(stage_);
                 Show();
                 break;
             case Stage::kTurn:
                 stage_ = Stage::kRiver;
+                trajectory_.emplace_back(stage_);
                 Show();
                 break;
             case Stage::kRiver:
@@ -309,20 +329,16 @@ namespace poker {
     }
 
     void State::Show() const {
-        std::cerr << "======================" << std::endl;
-        std::cerr << "stage: " << Visualizer::ToString(stage_) << std::endl;
-        std::cerr << "pot: " << pot_ << std::endl;
-        std::cerr << "community cards:" << std::endl;
+        std::clog << "======================" << std::endl;
+        std::clog << "stage: " << Visualizer::ToString(stage_) << std::endl;
+        std::clog << "pot: " << pot_ << std::endl;
+        std::clog << "community cards:" << std::endl;
         for (const std::string& str : Visualizer::ToStrings(community_cards())) {
-            std::cerr << str << std::endl;
+            std::clog << str << std::endl;
         }
-        std::cerr << std::endl;
-        for (int i = 0; i < players_.size(); ++i) {
-            std::cerr << std::endl;
-            for (const std::string& str : Visualizer::ToStrings(players_[i])) {
-                std::cerr << str << std::endl;
-            }
+        for (const std::string& str : Visualizer::ToStrings(players_)) {
+            std::clog << str << std::endl;
         }
-        std::cerr << "======================" << std::endl;
+        std::clog << "======================" << std::endl;
     }
 }

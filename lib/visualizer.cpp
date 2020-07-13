@@ -132,16 +132,107 @@ namespace poker {
         }
     }
 
+    std::string Visualizer::ToString(const Record& record) {
+        RecordType type = record.type();
+        if (type == RecordType::kStage) {
+            return "- " + ToString(record.stage());
+        } else {
+            return "- player" + std::to_string(record.player_id()) + ' ' + ToString(record.action());
+        }
+    }
+
     std::vector<std::string> Visualizer::ToStrings(const Player& player) {
         std::vector<std::string> ret;
-        if (player.folded()) {
-            return {"player" + std::to_string(player.id()) + " folded"};
-        }
         ret.emplace_back("player" + std::to_string(player.id()));
-        ret.emplace_back("  bet: " + std::to_string(player.bet()));
-        ret.emplace_back("  stack: " + std::to_string(player.stack()));
-        ret.emplace_back("  hole cards:");
-        for (const std::string& str : Visualizer::ToStrings(player.hole_cards())) {
+        ret.back().resize(15, ' ');
+        ret.emplace_back("---------------");
+        if (player.folded()) {
+            ret.emplace_back("folded         ");
+            ret.emplace_back("               ");
+            ret.emplace_back("               ");
+            ret.emplace_back("               ");
+            ret.emplace_back("               ");
+            ret.emplace_back("               ");
+            ret.emplace_back("               ");
+        } else {
+            ret.emplace_back("bet: " + std::to_string(player.bet()));
+            ret.back().resize(15, ' ');
+            ret.emplace_back("stack: " + std::to_string(player.stack()));
+            ret.back().resize(15, ' ');
+            ret.emplace_back("hole cards:");
+            ret.back().resize(15, ' ');
+            for (const std::string &str : Visualizer::ToStrings(player.hole_cards())) {
+                ret.emplace_back(str + ' ');
+            }
+        }
+        return ret;
+    }
+
+    std::vector<std::string> Visualizer::ToStrings(const Player& player, bool is_you) {
+        std::vector<std::string> ret;
+        if (is_you) {
+            ret.emplace_back("▼ you          ");
+        } else {
+            ret.emplace_back("               ");
+        }
+        for (const std::string& str : ToStrings(player)) {
+            ret.emplace_back(str);
+        }
+        return ret;
+    }
+
+    std::vector<std::string> Visualizer::ToStrings(const std::vector<Player>& players) {
+        std::vector<std::string> ret(9);
+        for (int i = 0; i < players.size(); ++i) {
+            std::vector<std::string> strs = ToStrings(players[i]);
+            for (int i = 0; i < 9; ++i) {
+                ret[i] += strs[i];
+            }
+        }
+        return ret;
+    }
+
+    std::vector<std::string> Visualizer::ToStrings(const std::vector<Player>& players, int player_id) {
+        std::vector<std::string> ret(10);
+        for (int i = 0; i < players.size(); ++i) {
+            std::vector<std::string> strs = ToStrings(players[i], i == player_id);
+            for (int i = 0; i < 10; ++i) {
+                ret[i] += strs[i];
+            }
+        }
+        return ret;
+    }
+
+    std::vector<std::string> Visualizer::ToStrings(const Result& result) {
+        std::vector<std::string> ret;
+        if (result.stage() == Stage::kShowdown) {
+            for (const auto& [id, hand] : result.hands()) {
+                ret.emplace_back("player" + std::to_string(id) + ": " + ToString(hand.category()));
+                for (const std::string& str : Visualizer::ToStrings(hand.cards())) {
+                    ret.emplace_back(str);
+                }
+            }
+        }
+        ret.emplace_back(
+                "player" + std::to_string(result.winner()) + " がポットの" +
+                std::to_string(result.pot()) + " を獲得");
+        return ret;
+    }
+
+    std::vector<std::string> Visualizer::ToStrings(const Observable& observable) {
+        std::vector<std::string> ret;
+        ret.emplace_back("history:");
+        for (auto it = observable.trajectory(); it != observable.trajectory_end(); ++it) {
+            ret.emplace_back(ToString(*it));
+        }
+        ret.emplace_back("-----------------");
+        ret.emplace_back("stage: " + ToString(observable.stage()));
+        ret.emplace_back("pot: " + std::to_string(observable.pot()));
+        ret.emplace_back("community cards:");
+        for (const std::string& str : ToStrings(observable.community_cards())) {
+            ret.emplace_back(str);
+        }
+        for (const std::string& str : ToStrings(observable.players(), observable.player_id())) {
             ret.emplace_back(str);
         }
         return ret;
