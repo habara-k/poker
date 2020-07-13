@@ -161,7 +161,7 @@ namespace poker {
             ret.back().resize(15, ' ');
             ret.emplace_back("hole cards:");
             ret.back().resize(15, ' ');
-            for (const std::string &str : Visualizer::ToStrings(player.hole_cards())) {
+            for (const std::string &str : ToStrings(player.hole_cards())) {
                 ret.emplace_back(str + ' ');
             }
         }
@@ -208,7 +208,7 @@ namespace poker {
         if (result.stage() == Stage::kShowdown) {
             for (const auto& [id, hand] : result.hands()) {
                 ret.emplace_back("player" + std::to_string(id) + ": " + ToString(hand.category()));
-                for (const std::string& str : Visualizer::ToStrings(hand.cards())) {
+                for (const std::string& str : ToStrings(hand.cards())) {
                     ret.emplace_back(str);
                 }
             }
