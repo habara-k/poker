@@ -1,13 +1,16 @@
 #ifndef POKER_ENVIRONMENT_H
 #define POKER_ENVIRONMENT_H
 
+#include <vector>
+#include <memory>
+
 #include "agent.h"
 
 namespace poker {
     class Environment {
-        std::vector<Agent> agents;
+        std::vector<std::unique_ptr<Agent>> agents;
     public:
-        Environment(int agent_num);
+        Environment(const std::vector<std::string>& agent_types);
 
         void Run();
     };

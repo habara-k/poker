@@ -5,7 +5,7 @@
 using namespace poker;
 
 TEST(env, Env) {
-    Environment env(6);
+    Environment env({"check_call", "check_call"});
 
     env.Run();
 }

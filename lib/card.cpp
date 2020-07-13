@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <numeric>
+#include <string>
+#include <array>
 
 namespace poker {
     Card::Card(unsigned id) : id_(id) {}
@@ -30,7 +32,6 @@ namespace poker {
     }
 
     CardSet::CardSet() {
-        std::cerr << "CardSet::CardSet" << std::endl;
         cards.reserve(52);
         for (int i = 0; i < 52; ++i) {
             cards.push_back(static_cast<Card>(i));

@@ -2,6 +2,9 @@
 #define POKER_CARD_H
 
 #include <vector>
+#include <string>
+#include <array>
+#include <optional>
 
 namespace poker {
     enum class Suit {

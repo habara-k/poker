@@ -1,5 +1,11 @@
 #include <iostream>
 
+#include "environment.h"
+
+using namespace poker;
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Environment env({"user", "check_call"});
+
+    env.Run();
 }

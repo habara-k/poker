@@ -3,6 +3,7 @@
 
 #include <array>
 #include <optional>
+#include <set>
 
 #include "card.h"
 
@@ -21,20 +22,21 @@ namespace poker {
 
     class Hand {
         HandCategory category_;
-        std::vector<Card> hand_;
+        std::array<Card,5> cards_;
     public:
-        Hand(HandCategory category, std::vector<Card> hand);
-        static Hand Create(const std::array<Card,2>& hall_cards, const std::array<Card,5>& community_cards);
+        Hand(HandCategory category, const std::vector<Card>& hand);
+        static Hand Create(
+                const std::array<std::optional<Card>,2>& hole_cards,
+                const std::array<Card,5>& community_cards);
 
         [[nodiscard]] HandCategory category() const;
-        [[nodiscard]] const std::vector<Card>& hand() const;
+        [[nodiscard]] const std::array<Card,5>& cards() const;
 
         struct RankCompare {
             bool operator() (const Hand& lhs, const Hand& rhs) const;
         };
     private:
-        template<typename S>
-        static std::optional<std::vector<Card>> HasStraight(const S& cards);
+        static std::optional<std::vector<Card>> HasStraight(const std::set<Card>& cards);
     };
 }
 

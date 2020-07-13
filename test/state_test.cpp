@@ -7,7 +7,7 @@ using namespace poker;
 
 TEST(state, HeadsUp) {
 
-    std::vector<std::array<Card,2>> hall_cards{
+    std::vector<std::array<std::optional<Card>,2>> hole_cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)}
     };
@@ -18,9 +18,9 @@ TEST(state, HeadsUp) {
 
     int bb = 100;
     int stack = 10000;
-    State state(bb, stack, hall_cards, community_cards);
-    EXPECT_EQ(state.players()[0].hall_cards(), hall_cards[0]);
-    EXPECT_EQ(state.players()[1].hall_cards(), hall_cards[1]);
+    State state(bb, stack, hole_cards, community_cards);
+    EXPECT_EQ(state.players()[0].hole_cards(), hole_cards[0]);
+    EXPECT_EQ(state.players()[1].hole_cards(), hole_cards[1]);
     EXPECT_EQ(state.players()[0].stack(), stack - bb / 2);
     EXPECT_EQ(state.players()[1].stack(), stack - bb);
     EXPECT_EQ(state.stage(), Stage::kPreFlop);
@@ -48,7 +48,7 @@ TEST(state, HeadsUp) {
 
 TEST(state, HeadsUpLimpIn) {
 
-    std::vector<std::array<Card,2>> hall_cards{
+    std::vector<std::array<std::optional<Card>,2>> hole_cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)}
     };
@@ -59,7 +59,7 @@ TEST(state, HeadsUpLimpIn) {
 
     int bb = 100;
     int stack = 10000;
-    State state(bb, stack, hall_cards, community_cards);
+    State state(bb, stack, hole_cards, community_cards);
 
     state.TakeAction(0, Action(ActionType::kCall));
     EXPECT_EQ(state.players()[0].stack(), stack - 100);
@@ -85,7 +85,7 @@ TEST(state, HeadsUpLimpIn) {
 
 TEST(state, Multiway) {
 
-    std::vector<std::array<Card,2>> cards{
+    std::vector<std::array<std::optional<Card>,2>> cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)},
             {Card(Suit::kD, Rank::k7),Card(Suit::kS, Rank::k7)},
@@ -101,12 +101,12 @@ TEST(state, Multiway) {
     int bb = 100;
     int stack = 10000;
     State state(bb, stack, cards, community_cards);
-    EXPECT_EQ(state.players()[0].hall_cards(), cards[0]);
-    EXPECT_EQ(state.players()[1].hall_cards(), cards[1]);
-    EXPECT_EQ(state.players()[2].hall_cards(), cards[2]);
-    EXPECT_EQ(state.players()[3].hall_cards(), cards[3]);
-    EXPECT_EQ(state.players()[4].hall_cards(), cards[4]);
-    EXPECT_EQ(state.players()[5].hall_cards(), cards[5]);
+    EXPECT_EQ(state.players()[0].hole_cards(), cards[0]);
+    EXPECT_EQ(state.players()[1].hole_cards(), cards[1]);
+    EXPECT_EQ(state.players()[2].hole_cards(), cards[2]);
+    EXPECT_EQ(state.players()[3].hole_cards(), cards[3]);
+    EXPECT_EQ(state.players()[4].hole_cards(), cards[4]);
+    EXPECT_EQ(state.players()[5].hole_cards(), cards[5]);
     EXPECT_EQ(state.players()[0].stack(), stack - bb / 2);
     EXPECT_EQ(state.players()[1].stack(), stack - bb);
     EXPECT_EQ(state.players()[2].stack(), stack);
@@ -177,7 +177,7 @@ TEST(state, Multiway) {
 
 TEST(state, AllFold) {
 
-    std::vector<std::array<Card,2>> cards{
+    std::vector<std::array<std::optional<Card>,2>> cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)},
             {Card(Suit::kD, Rank::k7),Card(Suit::kS, Rank::k7)},
@@ -193,12 +193,12 @@ TEST(state, AllFold) {
     int bb = 100;
     int stack = 10000;
     State state(bb, stack, cards, community_cards);
-    EXPECT_EQ(state.players()[0].hall_cards(), cards[0]);
-    EXPECT_EQ(state.players()[1].hall_cards(), cards[1]);
-    EXPECT_EQ(state.players()[2].hall_cards(), cards[2]);
-    EXPECT_EQ(state.players()[3].hall_cards(), cards[3]);
-    EXPECT_EQ(state.players()[4].hall_cards(), cards[4]);
-    EXPECT_EQ(state.players()[5].hall_cards(), cards[5]);
+    EXPECT_EQ(state.players()[0].hole_cards(), cards[0]);
+    EXPECT_EQ(state.players()[1].hole_cards(), cards[1]);
+    EXPECT_EQ(state.players()[2].hole_cards(), cards[2]);
+    EXPECT_EQ(state.players()[3].hole_cards(), cards[3]);
+    EXPECT_EQ(state.players()[4].hole_cards(), cards[4]);
+    EXPECT_EQ(state.players()[5].hole_cards(), cards[5]);
     EXPECT_EQ(state.players()[0].stack(), stack - bb / 2);
     EXPECT_EQ(state.players()[1].stack(), stack - bb);
     EXPECT_EQ(state.players()[2].stack(), stack);

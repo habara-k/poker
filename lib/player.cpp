@@ -4,8 +4,12 @@
 #include <utility>
 
 namespace poker {
-    Player::Player(int stack, const std::array<Card,2>& cards)
-            : stack_(stack), bet_(0), folded_(false), hall_cards_(cards) {}
+    Player::Player(int id, int stack, const std::array<Card,2>& cards)
+            : id_(id), stack_(stack), bet_(0), folded_(false),
+              hole_cards_{std::make_optional(cards[0]),
+                          std::make_optional(cards[1])} {}
+    Player::Player(int id, int stack, const std::array<std::optional<Card>,2>& cards)
+            : id_(id), stack_(stack), bet_(0), folded_(false), hole_cards_(cards) {}
 
     void Player::Bet(int size) {
         assert(stack_ >= size);
@@ -27,6 +31,14 @@ namespace poker {
         stack_ += pot;
     }
 
+    void Player::HideHoleCards() {
+        hole_cards_ = {std::nullopt, std::nullopt};
+    }
+
+    int Player::id() const {
+        return id_;
+    }
+
     int Player::stack() const {
         return stack_;
     }
@@ -39,7 +51,7 @@ namespace poker {
         return folded_;
     }
 
-    const std::array<Card,2>& Player::hall_cards() const {
-        return hall_cards_;
+    const std::array<std::optional<Card>,2>& Player::hole_cards() const {
+        return hole_cards_;
     }
 }

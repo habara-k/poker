@@ -2,15 +2,22 @@
 
 #include <cassert>
 #include <algorithm>
+#include <iostream>
+#include <map>
+
+#include "card.h"
+#include "hand.h"
+#include "visualizer.h"
 
 namespace poker {
     State::State(int bb, int stack,
-                const std::vector<std::array<Card,2>>& hall_cards,
-                const std::array<Card,5>& community_cards)
-                : all_community_cards_(community_cards), pot_(0),
-                  stage_(Stage::kPreFlop), bb_(bb) {
-        for (const auto& cards : hall_cards) {
-            players_.emplace_back(stack, cards);
+                const std::vector<std::array<std::optional<Card>,2>>& hole_cards,
+                const std::array<Card,5>& all_community_cards)
+                : all_community_cards_(all_community_cards), pot_(0),
+                  stage_(Stage::kPreFlop), someone_all_in_(false), bb_(bb) {
+
+        for (int id = 0; id < hole_cards.size(); ++id) {
+            players_.emplace_back(id, stack, hole_cards[id]);
         }
         assert(players_.size() >= 2);
         players_[0].Bet(bb / 2);
@@ -18,6 +25,8 @@ namespace poker {
         max_bet_ = bb;
         min_raise_size_ = bb;
         next_player_id_ = players_.size() == 2 ? 0 : 2;
+
+        Show();
     }
 
     int State::next_player_id() const {
@@ -54,6 +63,8 @@ namespace poker {
 
         assert(player_id == next_player_id_);
         assert(!terminal_player_id_ or terminal_player_id_.value() != player_id);
+
+        std::cerr << "player" << player_id << " " << Visualizer::ToString(action) << std::endl;
 
         trajectory_.emplace_back(player_id, action);
 
@@ -117,6 +128,7 @@ namespace poker {
                 assert(player.stack() == 0);
                 max_bet_ = player.bet();
                 terminal_player_id_ = player_id;
+                someone_all_in_ = true;
         }
 
         if (++next_player_id_ == players_.size()) next_player_id_ = 0;
@@ -130,16 +142,43 @@ namespace poker {
     const std::vector<Player>& State::players() const {
         return players_;
     }
-    std::vector<Card> State::community_cards() const {
+    std::array<std::optional<Card>,5> State::community_cards() const {
         switch (stage_) {
             case Stage::kPreFlop:
-                return {all_community_cards_.begin(), all_community_cards_.begin()};
+                return {
+                        std::nullopt,
+                        std::nullopt,
+                        std::nullopt,
+                        std::nullopt,
+                        std::nullopt};
             case Stage::kFlop:
-                return {all_community_cards_.begin(), all_community_cards_.begin() + 3};
+                return {
+                        std::make_optional(all_community_cards_[0]),
+                        std::make_optional(all_community_cards_[1]),
+                        std::make_optional(all_community_cards_[2]),
+                        std::nullopt,
+                        std::nullopt};
             case Stage::kTurn:
-                return {all_community_cards_.begin(), all_community_cards_.begin() + 4};
+                return {
+                        std::make_optional(all_community_cards_[0]),
+                        std::make_optional(all_community_cards_[1]),
+                        std::make_optional(all_community_cards_[2]),
+                        std::make_optional(all_community_cards_[3]),
+                        std::nullopt};
             case Stage::kRiver:
-                return {all_community_cards_.begin(), all_community_cards_.begin() + 5};
+                return {
+                        std::make_optional(all_community_cards_[0]),
+                        std::make_optional(all_community_cards_[1]),
+                        std::make_optional(all_community_cards_[2]),
+                        std::make_optional(all_community_cards_[3]),
+                        std::make_optional(all_community_cards_[4])};
+            case Stage::kShowdown:
+                return {
+                        std::make_optional(all_community_cards_[0]),
+                        std::make_optional(all_community_cards_[1]),
+                        std::make_optional(all_community_cards_[2]),
+                        std::make_optional(all_community_cards_[3]),
+                        std::make_optional(all_community_cards_[4])};
             default:
                 assert(false);
         }
@@ -164,10 +203,19 @@ namespace poker {
         for (Player& player : players_) {
             if (player.folded()) continue;
             pot_ += player.Collected();
+        }
+
+        stage_ = Stage::kEndHidden;
+
+        std::cerr << "========Result========" << std::endl;
+        for (int i = 0; i < players_.size(); ++i) {
+            Player& player = players_[i];
+            if (player.folded()) continue;
+            std::cerr << "player" << i << " が" << pot_ << " を獲得" << std::endl;
             player.Win(pot_);
             pot_ = 0;
         }
-        stage_ = Stage::kEndHidden;
+        std::cerr << "======================" << std::endl;
     }
 
     void State::Showdown() {
@@ -175,6 +223,35 @@ namespace poker {
         assert(remained_players() > 1);
 
         stage_ = Stage::kShowdown;
+
+        Show();
+
+        // TODO: chop
+        std::vector<int> player_ids;
+        for (int i = 0; i < players_.size(); ++i) {
+            if (players_[i].folded()) continue;
+            player_ids.push_back(i);
+        }
+
+        std::cerr << "========Result========" << std::endl;
+        std::map<int,Hand> hands;
+        for (int id : player_ids) {
+            Hand hand = Hand::Create(players_[id].hole_cards(), all_community_cards_);
+            std::cerr << "player" << id << ": " << Visualizer::ToString(hand.category()) << std::endl;
+            for (const std::string& str : Visualizer::ToStrings(hand.cards())) {
+                std::cerr << str << std::endl;
+            }
+            hands.insert({id, hand});
+        }
+
+        int winner = *std::min_element(player_ids.begin(), player_ids.end(), [&](int id0, int id1){
+            return Hand::RankCompare()(hands.at(id0), hands.at(id1));
+        });
+
+        std::cerr << "player" << winner << " が" << pot_ << " を獲得" << std::endl;
+        std::cerr << "======================" << std::endl;
+        players_[winner].Win(pot_);
+        pot_ = 0;
     }
 
     int State::remained_players() const {
@@ -205,22 +282,47 @@ namespace poker {
         next_player_id_ = find_remained_player(next_player_id_);
         terminal_player_id_ = std::nullopt;
 
+        if (someone_all_in_) {
+            Showdown();
+            return;
+        }
+
         switch (stage_) {
             case Stage::kPreFlop:
                 stage_ = Stage::kFlop;
+                Show();
                 break;
             case Stage::kFlop:
                 stage_ = Stage::kTurn;
+                Show();
                 break;
             case Stage::kTurn:
                 stage_ = Stage::kRiver;
+                Show();
                 break;
             case Stage::kRiver:
-                stage_ = Stage::kShowdown;
                 Showdown();
                 break;
             default:
                 assert(false);
         }
+    }
+
+    void State::Show() const {
+        std::cerr << "======================" << std::endl;
+        std::cerr << "stage: " << Visualizer::ToString(stage_) << std::endl;
+        std::cerr << "pot: " << pot_ << std::endl;
+        std::cerr << "community cards:" << std::endl;
+        for (const std::string& str : Visualizer::ToStrings(community_cards())) {
+            std::cerr << str << std::endl;
+        }
+        std::cerr << std::endl;
+        for (int i = 0; i < players_.size(); ++i) {
+            std::cerr << std::endl;
+            for (const std::string& str : Visualizer::ToStrings(players_[i])) {
+                std::cerr << str << std::endl;
+            }
+        }
+        std::cerr << "======================" << std::endl;
     }
 }

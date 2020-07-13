@@ -5,19 +5,22 @@
 #include <array>
 
 #include "card.h"
-#include "action_range.h"
-#include "action_record.h"
+#include "state.h"
 
 namespace poker {
     class Observable {
-        std::vector<Card> community_cards_;
-        std::array<Card,2> my_hall_cards_;
-        std::vector<ActionRecord> trajectory_;
+        const State& state_;
+        std::vector<Player> players_;
+        int player_id_;
     public:
-        Observable(
-                std::vector<Card> community_cards,
-                const std::array<Card,2>& my_hall_cards,
-                std::vector<ActionRecord> trajectory);
+        Observable(const State& state, int player_id);
+
+        [[nodiscard]] int player_id() const;
+        [[nodiscard]] const std::vector<Player>& players() const;
+        [[nodiscard]] std::array<std::optional<Card>,5> community_cards() const;
+        [[nodiscard]] int pot() const;
+        [[nodiscard]] Stage stage() const;
+        [[nodiscard]] const std::vector<ActionRecord>& trajectory() const;
     };
 }
 

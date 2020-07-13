@@ -7,15 +7,15 @@
 #include "card.h"
 
 namespace poker {
-    Hand::Hand(HandCategory category, std::vector<Card> hand)
-            : category_(category), hand_(std::move(hand)) {
-        assert(hand_.size() == 5);
+    Hand::Hand(HandCategory category, const std::vector<Card>& hand)
+            : category_(category), cards_{hand[0], hand[1], hand[2], hand[3], hand[4]} {
+        assert(hand.size() == 5);
     }
 
-    Hand Hand::Create(const std::array<Card,2>& hall_cards, const std::array<Card,5>& community_cards) {
+    Hand Hand::Create(const std::array<std::optional<Card>,2>& hole_cards, const std::array<Card,5>& community_cards) {
         std::set<Card> cards;
-        for (const Card &card : hall_cards) {
-            cards.insert(card);
+        for (const std::optional<Card> &card : hole_cards) {
+            cards.insert(card.value());
         }
         for (const Card &card : community_cards) {
             cards.insert(card);
@@ -161,26 +161,25 @@ namespace poker {
         return category_;
     }
 
-    const std::vector<Card>& Hand::hand() const {
-        return hand_;
+    const std::array<Card,5>& Hand::cards() const {
+        return cards_;
     }
 
     bool Hand::RankCompare::operator() (const Hand& lhs, const Hand& rhs) const {
-        assert(lhs.hand_.size() == 5);
-        assert(rhs.hand_.size() == 5);
+        assert(lhs.cards_.size() == 5);
+        assert(rhs.cards_.size() == 5);
         auto compare = Card::RankCompare();
         if (lhs.category_ == rhs.category_) {
             for (int i = 0; i < 5; ++i) {
-                if (compare(lhs.hand_[i], rhs.hand_[i])) return true;
-                if (compare(rhs.hand_[i], lhs.hand_[i])) return false;
+                if (compare(lhs.cards_[i], rhs.cards_[i])) return true;
+                if (compare(rhs.cards_[i], lhs.cards_[i])) return false;
             }
             return false;
         }
         return lhs.category_ < rhs.category_;
     }
 
-    template<typename S>
-    std::optional<std::vector<Card>> Hand::HasStraight(const S& cards) {
+    std::optional<std::vector<Card>> Hand::HasStraight(const std::set<Card>& cards) {
 
         std::map<Rank, Card> rank_to_card;
         unsigned bit = 0;

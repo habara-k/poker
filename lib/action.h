@@ -2,6 +2,7 @@
 #define POKER_ACTION_H
 
 #include <optional>
+#include <string>
 
 namespace poker {
     enum ActionType {
