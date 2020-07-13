@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "card.h"
+#include "types.h"
 
 namespace poker {
     class Player {
@@ -12,10 +13,10 @@ namespace poker {
         int stack_;
         int bet_;
         bool folded_;
-        std::array<std::optional<Card>,2> hole_cards_;
+        HoleCards hole_cards_;
     public:
-        Player(int id, int stack, const std::array<Card,2>& cards);
-        Player(int id, int stack, const std::array<std::optional<Card>,2>& cards);
+        //Player(int id, int stack, const std::array<Card,2>& cards);
+        Player(int id, int stack, const HoleCards& cards);
         void Bet(int size);
         int Collected();
         void Fold();
@@ -25,7 +26,7 @@ namespace poker {
         [[nodiscard]] int stack() const;
         [[nodiscard]] int bet() const;
         [[nodiscard]] bool folded() const;
-        [[nodiscard]] const std::array<std::optional<Card>,2>& hole_cards() const;
+        [[nodiscard]] const HoleCards& hole_cards() const;
     };
 }
 

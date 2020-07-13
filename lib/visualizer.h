@@ -21,35 +21,14 @@ namespace poker {
         [[nodiscard]] static std::array<std::string,4> ToStrings(const Card& card);
         [[nodiscard]] static std::array<std::string,4> ToStrings(const std::optional<Card>& card);
 
-        template<unsigned long size>
-        [[nodiscard]] static std::array<std::string,4> ToStrings(const std::array<Card,size>& cards) {
-            std::array<std::string, 4> ret;
-            for (const Card& card : cards) {
-                std::array<std::string, 4> strs = ToStrings(card);
-                for (int i = 0; i < 4; ++i) {
-                    ret[i] += strs[i];
-                }
-            }
-            return ret;
-        }
-
-        template<unsigned long size>
-        [[nodiscard]] static std::array<std::string,4> ToStrings(const std::array<std::optional<Card>,size>& cards) {
-            std::array<std::string, 4> ret;
-            for (const std::optional<Card>& card : cards) {
-                std::array<std::string, 4> strs = ToStrings(card);
-                for (int i = 0; i < 4; ++i) {
-                    ret[i] += strs[i];
-                }
-            }
-            return ret;
-        }
-
         [[nodiscard]] static std::string ToString(Stage stage);
         [[nodiscard]] static std::string ToString(HandCategory category);
         [[nodiscard]] static std::string ToString(ActionType action_type);
         [[nodiscard]] static std::string ToString(const Action& action);
         [[nodiscard]] static std::string ToString(const Record& record);
+        [[nodiscard]] static std::array<std::string,4> ToStrings(const HoleCards& cards);
+        [[nodiscard]] static std::array<std::string,4> ToStrings(const HandCards& cards);
+        [[nodiscard]] static std::array<std::string,4> ToStrings(const CommunityCards& cards);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Player& player);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Player& player, bool is_you);
         [[nodiscard]] static std::vector<std::string> ToStrings(const std::vector<Player>& players);

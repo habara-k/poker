@@ -4,11 +4,11 @@
 #include <utility>
 
 namespace poker {
-    Player::Player(int id, int stack, const std::array<Card,2>& cards)
-            : id_(id), stack_(stack), bet_(0), folded_(false),
-              hole_cards_{std::make_optional(cards[0]),
-                          std::make_optional(cards[1])} {}
-    Player::Player(int id, int stack, const std::array<std::optional<Card>,2>& cards)
+    //Player::Player(int id, int stack, const std::array<Card,2>& cards)
+    //        : id_(id), stack_(stack), bet_(0), folded_(false),
+    //          hole_cards_{std::make_optional(cards[0]),
+    //                      std::make_optional(cards[1])} {}
+    Player::Player(int id, int stack, const HoleCards& cards)
             : id_(id), stack_(stack), bet_(0), folded_(false), hole_cards_(cards) {}
 
     void Player::Bet(int size) {

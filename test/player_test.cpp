@@ -8,7 +8,7 @@ using namespace poker;
 TEST(player, Player) {
     int id = 0;
     int stack = 10000;
-    std::array<std::optional<Card>,2> cards{Card(19), Card(20)};
+    HoleCards cards{Card(19), Card(20)};
     Player player(id, stack, cards);
     EXPECT_EQ(player.id(), id);
     EXPECT_EQ(player.stack(), stack);

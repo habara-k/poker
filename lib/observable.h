@@ -6,6 +6,7 @@
 
 #include "card.h"
 #include "state.h"
+#include "types.h"
 
 namespace poker {
     class Observable {
@@ -18,12 +19,12 @@ namespace poker {
 
         [[nodiscard]] int player_id() const;
         [[nodiscard]] const std::vector<Player>& players() const;
-        [[nodiscard]] std::array<std::optional<Card>,5> community_cards() const;
+        [[nodiscard]] CommunityCards community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
-        [[nodiscard]] std::vector<Record>::const_iterator trajectory() const;
-        [[nodiscard]] std::vector<Record>::const_iterator trajectory_end() const;
-        //[[nodiscard]] const std::vector<Record>& trajectory() const;
+        [[nodiscard]] TrajectoryIterator trajectory() const;
+        [[nodiscard]] TrajectoryIterator trajectory_end() const;
+        //[[nodiscard]] const Trajectory& trajectory() const;
         [[nodiscard]] const Result& result() const;
     };
 }

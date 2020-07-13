@@ -141,6 +141,39 @@ namespace poker {
         }
     }
 
+    std::array<std::string,4> Visualizer::ToStrings(const HoleCards& cards) {
+        std::array<std::string, 4> ret;
+        for (const std::optional<Card>& card : cards) {
+            std::array<std::string, 4> strs = ToStrings(card);
+            for (int i = 0; i < 4; ++i) {
+                ret[i] += strs[i];
+            }
+        }
+        return ret;
+    }
+
+    std::array<std::string,4> Visualizer::ToStrings(const HandCards& cards) {
+        std::array<std::string, 4> ret;
+        for (const std::optional<Card>& card : cards) {
+            std::array<std::string, 4> strs = ToStrings(card);
+            for (int i = 0; i < 4; ++i) {
+                ret[i] += strs[i];
+            }
+        }
+        return ret;
+    }
+
+    std::array<std::string,4> Visualizer::ToStrings(const CommunityCards& cards) {
+        std::array<std::string, 4> ret;
+        for (const std::optional<Card>& card : cards) {
+            std::array<std::string, 4> strs = ToStrings(card);
+            for (int i = 0; i < 4; ++i) {
+                ret[i] += strs[i];
+            }
+        }
+        return ret;
+    }
+
     std::vector<std::string> Visualizer::ToStrings(const Player& player) {
         std::vector<std::string> ret;
         ret.emplace_back("player" + std::to_string(player.id()));

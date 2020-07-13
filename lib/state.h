@@ -14,7 +14,7 @@
 namespace poker {
     class State {
         std::vector<Player> players_;
-        std::array<Card,5> all_community_cards_;
+        CommunityCards all_community_cards_;
         int pot_;
         Stage stage_;
         int max_bet_;
@@ -22,7 +22,7 @@ namespace poker {
         int next_player_id_;
         bool someone_all_in_;
         std::optional<int> terminal_player_id_;
-        std::vector<Record> trajectory_;
+        Trajectory trajectory_;
         std::vector<int> bookmark_;
         Result result_;
         const int bb_;
@@ -30,8 +30,8 @@ namespace poker {
     public:
         explicit State(
                 int bb, int stack,
-                const std::vector<std::array<std::optional<Card>,2>>& hole_cards,
-                const std::array<Card,5>& all_community_cards);
+                const std::vector<HoleCards>& hole_cards,
+                const CommunityCards& all_community_cards);
 
         [[nodiscard]] int next_player_id() const;
         [[nodiscard]] std::vector<ActionRange> PossibleActions() const;
@@ -39,13 +39,13 @@ namespace poker {
         void TakeAction(int player_id, const Action& action);
 
         [[nodiscard]] const std::vector<Player>& players() const;
-        [[nodiscard]] std::array<std::optional<Card>,5> community_cards() const;
+        [[nodiscard]] CommunityCards community_cards() const;
         //[[nodiscard]]  std::array<Card,5>& all_community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
         //[[nodiscard]] const std::vector<Record>& trajectory() const;
-        [[nodiscard]] std::vector<Record>::const_iterator trajectory(int player_id) const;
-        [[nodiscard]] std::vector<Record>::const_iterator trajectory_end() const;
+        [[nodiscard]] TrajectoryIterator trajectory(int player_id) const;
+        [[nodiscard]] TrajectoryIterator trajectory_end() const;
         [[nodiscard]] const Result& result() const;
 
     private:

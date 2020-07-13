@@ -6,6 +6,7 @@
 #include <set>
 
 #include "card.h"
+#include "types.h"
 
 namespace poker {
     enum HandCategory {
@@ -22,15 +23,15 @@ namespace poker {
 
     class Hand {
         HandCategory category_;
-        std::array<Card,5> cards_;
+        HandCards cards_;
     public:
         Hand(HandCategory category, const std::vector<Card>& hand);
         static Hand Create(
-                const std::array<std::optional<Card>,2>& hole_cards,
-                const std::array<Card,5>& community_cards);
+                const HoleCards& hole_cards,
+                const CommunityCards& community_cards);
 
         [[nodiscard]] HandCategory category() const;
-        [[nodiscard]] const std::array<Card,5>& cards() const;
+        [[nodiscard]] const HandCards& cards() const;
 
         struct RankCompare {
             bool operator() (const Hand& lhs, const Hand& rhs) const;

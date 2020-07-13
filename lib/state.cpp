@@ -11,8 +11,8 @@
 
 namespace poker {
     State::State(int bb, int stack,
-                const std::vector<std::array<std::optional<Card>,2>>& hole_cards,
-                const std::array<Card,5>& all_community_cards)
+                const std::vector<HoleCards>& hole_cards,
+                const CommunityCards& all_community_cards)
                 : all_community_cards_(all_community_cards), pot_(0),
                   stage_(Stage::kPreFlop), someone_all_in_(false),
                   bookmark_(hole_cards.size()), bb_(bb) {
@@ -144,7 +144,7 @@ namespace poker {
     const std::vector<Player>& State::players() const {
         return players_;
     }
-    std::array<std::optional<Card>,5> State::community_cards() const {
+    CommunityCards State::community_cards() const {
         switch (stage_) {
             case Stage::kPreFlop:
                 return {
@@ -155,32 +155,32 @@ namespace poker {
                         std::nullopt};
             case Stage::kFlop:
                 return {
-                        std::make_optional(all_community_cards_[0]),
-                        std::make_optional(all_community_cards_[1]),
-                        std::make_optional(all_community_cards_[2]),
+                        all_community_cards_[0],
+                        all_community_cards_[1],
+                        all_community_cards_[2],
                         std::nullopt,
                         std::nullopt};
             case Stage::kTurn:
                 return {
-                        std::make_optional(all_community_cards_[0]),
-                        std::make_optional(all_community_cards_[1]),
-                        std::make_optional(all_community_cards_[2]),
-                        std::make_optional(all_community_cards_[3]),
+                        all_community_cards_[0],
+                        all_community_cards_[1],
+                        all_community_cards_[2],
+                        all_community_cards_[3],
                         std::nullopt};
             case Stage::kRiver:
                 return {
-                        std::make_optional(all_community_cards_[0]),
-                        std::make_optional(all_community_cards_[1]),
-                        std::make_optional(all_community_cards_[2]),
-                        std::make_optional(all_community_cards_[3]),
-                        std::make_optional(all_community_cards_[4])};
+                        all_community_cards_[0],
+                        all_community_cards_[1],
+                        all_community_cards_[2],
+                        all_community_cards_[3],
+                        all_community_cards_[4]};
             case Stage::kShowdown:
                 return {
-                        std::make_optional(all_community_cards_[0]),
-                        std::make_optional(all_community_cards_[1]),
-                        std::make_optional(all_community_cards_[2]),
-                        std::make_optional(all_community_cards_[3]),
-                        std::make_optional(all_community_cards_[4])};
+                        all_community_cards_[0],
+                        all_community_cards_[1],
+                        all_community_cards_[2],
+                        all_community_cards_[3],
+                        all_community_cards_[4]};
             default:
                 assert(false);
         }
@@ -197,10 +197,10 @@ namespace poker {
     //const std::vector<Record>& State::trajectory() const {
     //    return trajectory_;
     //}
-    std::vector<Record>::const_iterator State::trajectory(int player_id) const {
+    TrajectoryIterator State::trajectory(int player_id) const {
         return trajectory_.begin() + bookmark_[player_id];
     }
-    std::vector<Record>::const_iterator State::trajectory_end() const {
+    TrajectoryIterator State::trajectory_end() const {
         return trajectory_.end();
     }
     const Result& State::result() const {

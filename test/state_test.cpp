@@ -7,11 +7,11 @@ using namespace poker;
 
 TEST(state, HeadsUp) {
 
-    std::vector<std::array<std::optional<Card>,2>> hole_cards{
+    std::vector<HoleCards> hole_cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)}
     };
-    std::array<Card,5> community_cards{
+    CommunityCards community_cards{
             Card(Suit::kH, Rank::kQ), Card(Suit::kC, Rank::k2), Card(Suit::kC, Rank::k5),
             Card(Suit::kH, Rank::k9), Card(Suit::kD, Rank::k4)
     };
@@ -48,11 +48,11 @@ TEST(state, HeadsUp) {
 
 TEST(state, HeadsUpLimpIn) {
 
-    std::vector<std::array<std::optional<Card>,2>> hole_cards{
+    std::vector<HoleCards> hole_cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)}
     };
-    std::array<Card,5> community_cards{
+    CommunityCards community_cards{
             Card(Suit::kH, Rank::kQ), Card(Suit::kC, Rank::k2), Card(Suit::kC, Rank::k5),
             Card(Suit::kH, Rank::k9), Card(Suit::kD, Rank::k4)
     };
@@ -85,7 +85,7 @@ TEST(state, HeadsUpLimpIn) {
 
 TEST(state, Multiway) {
 
-    std::vector<std::array<std::optional<Card>,2>> cards{
+    std::vector<HoleCards> cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)},
             {Card(Suit::kD, Rank::k7),Card(Suit::kS, Rank::k7)},
@@ -93,7 +93,7 @@ TEST(state, Multiway) {
             {Card(Suit::kD, Rank::k5),Card(Suit::kS, Rank::k5)},
             {Card(Suit::kD, Rank::k4),Card(Suit::kS, Rank::k4)}
     };
-    std::array<Card,5> community_cards{
+    CommunityCards community_cards{
             Card(Suit::kH, Rank::kQ), Card(Suit::kC, Rank::k2), Card(Suit::kC, Rank::k5),
             Card(Suit::kH, Rank::k9), Card(Suit::kD, Rank::k4)
     };
@@ -177,7 +177,7 @@ TEST(state, Multiway) {
 
 TEST(state, AllFold) {
 
-    std::vector<std::array<std::optional<Card>,2>> cards{
+    std::vector<HoleCards> cards{
             {Card(Suit::kH, Rank::kA),Card(Suit::kH, Rank::kK)},
             {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)},
             {Card(Suit::kD, Rank::k7),Card(Suit::kS, Rank::k7)},
@@ -185,7 +185,7 @@ TEST(state, AllFold) {
             {Card(Suit::kD, Rank::k5),Card(Suit::kS, Rank::k5)},
             {Card(Suit::kD, Rank::k4),Card(Suit::kS, Rank::k4)}
     };
-    std::array<Card,5> community_cards{
+    CommunityCards community_cards{
             Card(Suit::kH, Rank::kQ), Card(Suit::kC, Rank::k2), Card(Suit::kC, Rank::k5),
             Card(Suit::kH, Rank::k9), Card(Suit::kD, Rank::k4)
     };

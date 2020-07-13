@@ -18,7 +18,7 @@ namespace poker {
     const std::vector<Player>& Observable::players() const {
         return players_;
     }
-    std::array<std::optional<Card>,5> Observable::community_cards() const {
+    CommunityCards Observable::community_cards() const {
         return state_.community_cards();
     }
     int Observable::pot() const {

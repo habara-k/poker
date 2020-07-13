@@ -12,13 +12,13 @@ namespace poker {
         assert(hand.size() == 5);
     }
 
-    Hand Hand::Create(const std::array<std::optional<Card>,2>& hole_cards, const std::array<Card,5>& community_cards) {
+    Hand Hand::Create(const HoleCards& hole_cards, const CommunityCards& community_cards) {
         std::set<Card> cards;
-        for (const std::optional<Card> &card : hole_cards) {
+        for (const std::optional<Card>& card : hole_cards) {
             cards.insert(card.value());
         }
-        for (const Card &card : community_cards) {
-            cards.insert(card);
+        for (const std::optional<Card>& card : community_cards) {
+            cards.insert(card.value());
         }
 
         std::map<Suit, std::set<Card>> suit_to_cards;

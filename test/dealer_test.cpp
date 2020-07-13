@@ -16,7 +16,7 @@ TEST(dealer, Deal) {
         ++card_count[cards[1].value()];
     }
     for (const auto& card : community_cards) {
-        ++card_count[card];
+        ++card_count[card.value()];
     }
 
     EXPECT_EQ(card_count.size(), 6 * 2 + 5);
@@ -28,7 +28,7 @@ TEST(dealer, Deal) {
         ++card_count[cards[1].value()];
     }
     for (const auto& card : community_cards2) {
-        ++card_count[card];
+        ++card_count[card.value()];
     }
 
     EXPECT_NE(card_count, card_count2);
