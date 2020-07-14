@@ -1,28 +1,25 @@
 #include "result.h"
 
 #include <cassert>
+#include <utility>
 
 namespace poker {
-    Result::Result(Stage stage, int winner, int pot)
-            : stage_(stage), winner_(winner), pot_(pot) {
+    Result::Result(Stage stage, std::map<int,int> winner_to_pot)
+            : stage_(stage), winner_to_pot_(std::move(winner_to_pot)) {
         assert(stage == Stage::kEndHidden);
     }
 
-    Result::Result(Stage stage, int winner, int pot, std::map<int,Hand> hands)
-            : stage_(stage), winner_(winner), pot_(pot), hands_(hands) {
-        assert(stage == Stage::kShowdown);
+    Result::Result(Stage stage, std::map<int,int> winner_to_pot, std::map<int,Hand> hands)
+            : stage_(stage), winner_to_pot_(std::move(winner_to_pot)), hands_(hands) {
+            assert(stage == Stage::kShowdown);
     }
 
     Stage Result::stage() const {
         return stage_;
     }
 
-    int Result::winner() const {
-        return winner_;
-    }
-
-    int Result::pot() const {
-        return pot_;
+    const std::map<int,int>& Result::winner_to_pot() const {
+        return winner_to_pot_;
     }
 
     std::map<int,Hand> Result::hands() const {

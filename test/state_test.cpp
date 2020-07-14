@@ -226,3 +226,57 @@ TEST(state, AllFold) {
     EXPECT_EQ(state.stage(), Stage::kEndHidden);
     EXPECT_EQ(state.players()[1].stack(), stack + 50);
 }
+
+TEST(state, HeadsChop) {
+
+    std::vector<HoleCards> hole_cards{
+            {Card(Suit::kH, Rank::k2),Card(Suit::kD, Rank::kK)},
+            {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)}
+    };
+    CommunityCards community_cards{
+            Card(Suit::kH, Rank::kA), Card(Suit::kH, Rank::kK), Card(Suit::kH, Rank::kQ),
+            Card(Suit::kH, Rank::kJ), Card(Suit::kH, Rank::kT)
+    };
+
+    int bb = 100;
+    int stack = 10000;
+    State state(bb, stack, hole_cards, community_cards);
+
+    state.TakeAction(0, Action(ActionType::kAllIn));
+    EXPECT_EQ(state.players()[0].stack(), 0);
+    EXPECT_EQ(state.stage(), Stage::kPreFlop);
+    state.TakeAction(1, Action(ActionType::kCall));
+
+    EXPECT_EQ(state.stage(), Stage::kShowdown);
+    EXPECT_EQ(state.players()[0].stack(), 10000);
+    EXPECT_EQ(state.players()[1].stack(), 10000);
+}
+
+TEST(state, Chop) {
+
+    std::vector<HoleCards> hole_cards{
+            {Card(Suit::kH, Rank::k2),Card(Suit::kD, Rank::kK)},
+            {Card(Suit::kD, Rank::k8),Card(Suit::kS, Rank::k8)},
+            {Card(Suit::kD, Rank::k5),Card(Suit::kS, Rank::k4)},
+            {Card(Suit::kD, Rank::k2),Card(Suit::kS, Rank::kJ)}
+    };
+    CommunityCards community_cards{
+            Card(Suit::kH, Rank::kA), Card(Suit::kH, Rank::kK), Card(Suit::kH, Rank::kQ),
+            Card(Suit::kH, Rank::kJ), Card(Suit::kH, Rank::kT)
+    };
+
+    int bb = 100;
+    int stack = 10000;
+    State state(bb, stack, hole_cards, community_cards);
+
+    state.TakeAction(2, Action(ActionType::kAllIn));
+    state.TakeAction(3, Action(ActionType::kCall));
+    state.TakeAction(0, Action(ActionType::kFold));
+    state.TakeAction(1, Action(ActionType::kCall));
+
+    EXPECT_EQ(state.stage(), Stage::kShowdown);
+    EXPECT_EQ(state.players()[0].stack(), stack - bb / 2);
+    EXPECT_EQ(state.players()[1].stack(), stack + (50 / 3) + 1);
+    EXPECT_EQ(state.players()[2].stack(), stack + (50 / 3) + 1);
+    EXPECT_EQ(state.players()[3].stack(), stack + (50 / 3));
+}

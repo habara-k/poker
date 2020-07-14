@@ -5,7 +5,6 @@
 
 namespace poker {
 
-    //std::pair<std::vector<std::array<std::optional<Card>,2>>, std::array<Card,5>>
     std::pair<std::vector<HoleCards>, CommunityCards>
     Dealer::Deal(int player_num) {
         static CardSet card_set;

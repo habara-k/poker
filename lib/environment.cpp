@@ -44,7 +44,7 @@ namespace poker {
         }
 
         for (int id = 0; id < agents.size(); ++id) {
-            agents[id]->Reward(Observable(state, id, false));
+            agents[id]->Reward(Observable(state, id, state.stage() == Stage::kEndHidden));
         }
     }
 }

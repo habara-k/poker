@@ -26,7 +26,3 @@ $ ./poker.out
 
 Everyone comes into the game with the same stack.
 There is no side pot.
-
-And there is no chop.
-If more than one player wins, one of them wins.
-We do not consider fractions of the pot.

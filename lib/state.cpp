@@ -178,35 +178,19 @@ namespace poker {
                         all_community_cards_[3],
                         std::nullopt};
             case Stage::kRiver:
-                return {
-                        all_community_cards_[0],
-                        all_community_cards_[1],
-                        all_community_cards_[2],
-                        all_community_cards_[3],
-                        all_community_cards_[4]};
+                return all_community_cards_;
             case Stage::kShowdown:
-                return {
-                        all_community_cards_[0],
-                        all_community_cards_[1],
-                        all_community_cards_[2],
-                        all_community_cards_[3],
-                        all_community_cards_[4]};
-            default:
-                assert(false);
+                return all_community_cards_;
+            case Stage::kEndHidden:
+                return all_community_cards_;
         }
     }
-    //const std::array<Card,5>& State::all_community_cards() const {
-    //    return all_community_cards_;
-    //}
     int State::pot() const {
         return pot_;
     }
     Stage State::stage() const {
         return stage_;
     }
-    //const std::vector<Record>& State::trajectory() const {
-    //    return trajectory_;
-    //}
     TrajectoryIterator State::trajectory(int player_id) const {
         return trajectory_.begin() + bookmark_[player_id];
     }
@@ -223,19 +207,19 @@ namespace poker {
         stage_ = Stage::kEndHidden;
         trajectory_.emplace_back(stage_);
 
-        // TODO: need?
-        // Show();
+        Show();
 
         for (int i = 0; i < players_.size(); ++i) {
             Player& player = players_[i];
             if (player.folded()) continue;
             // player i is winner
-            result_ = Result(stage_, i, pot_);
+            result_ = Result(stage_, std::map<int,int>{{i, pot_}});
 
             // 勝者のpotが未回収なので, ここで回収する.
             pot_ += player.Collected();
 
             player.Win(pot_);
+            pot_ = 0;
         }
 
         for (const std::string& str : Visualizer::ToStrings(result_.value())) {
@@ -263,13 +247,29 @@ namespace poker {
             hands.insert({id, Hand::Create(players_[id].hole_cards(), all_community_cards_)});
         }
 
-        int winner = *std::min_element(player_ids.begin(), player_ids.end(), [&](int id0, int id1){
-            return Hand::RankCompare()(hands.at(id0), hands.at(id1));
-        });
+        // winnerを計算する.
+        std::sort(player_ids.begin(), player_ids.end(), [&hands](int id0, int id1){
+                return Hand::RankCompare()(hands.at(id0), hands.at(id1)); });
 
-        result_ = Result(stage_, winner, pot_, hands);
+        auto end = std::upper_bound(player_ids.begin(), player_ids.end(), player_ids[0],
+                [&hands](int id0, int id1){return Hand::RankCompare()(hands.at(id0), hands.at(id1)); });
 
-        players_[winner].Win(pot_);
+        std::map<int, int> winner_to_pot;
+        for (auto it = player_ids.begin(); it != end; ++it) {
+            winner_to_pot[*it];
+        }
+
+        int quotient = pot_ / winner_to_pot.size(),
+            reminder = pot_ % winner_to_pot.size();
+        for (auto& [winner, pot] : winner_to_pot) {
+            // player_id が小さい順に余りをもらう.
+            // ヘッズアップはBBの方がSBより先にもらうべきだが, このときは2人なので余りが出ることはない.
+            pot = quotient + (reminder ? --reminder, 1 : 0);
+            players_[winner].Win(pot);
+        }
+
+        result_ = Result(stage_, winner_to_pot, hands);
+
         pot_ = 0;
 
         for (const std::string& str : Visualizer::ToStrings(result_.value())) {

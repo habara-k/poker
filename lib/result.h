@@ -9,16 +9,14 @@
 namespace poker {
     class Result {
         Stage stage_;   // kEndHidden or kShowdown
-        int winner_;
-        int pot_;
+        std::map<int,int> winner_to_pot_;
         std::optional<std::map<int,Hand>> hands_;
     public:
-        Result(Stage stage, int winner, int pot);
-        Result(Stage stage, int winner, int pot, std::map<int,Hand> hands);
+        Result(Stage stage, std::map<int,int> winner_to_pot_);
+        Result(Stage stage, std::map<int,int> winner_to_pot_, std::map<int,Hand> hands);
 
         [[nodiscard]] Stage stage() const;
-        [[nodiscard]] int winner() const;
-        [[nodiscard]] int pot() const;
+        [[nodiscard]] const std::map<int,int>& winner_to_pot() const;
         [[nodiscard]] std::map<int,Hand> hands() const;
     };
 }

@@ -40,10 +40,8 @@ namespace poker {
 
         [[nodiscard]] const std::vector<Player>& players() const;
         [[nodiscard]] CommunityCards community_cards() const;
-        //[[nodiscard]]  std::array<Card,5>& all_community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
-        //[[nodiscard]] const std::vector<Record>& trajectory() const;
         [[nodiscard]] TrajectoryIterator trajectory(int player_id) const;
         [[nodiscard]] TrajectoryIterator trajectory_end() const;
         [[nodiscard]] const std::optional<Result>& result() const;

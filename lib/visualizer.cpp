@@ -260,9 +260,14 @@ namespace poker {
                 }
             }
         }
-        ret.emplace_back(
-                "player" + std::to_string(result.winner()) + " がポットの" +
-                std::to_string(result.pot()) + " を獲得");
+        for (const auto& [winner, pot] : result.winner_to_pot()) {
+            ret.emplace_back(
+                    "player" + std::to_string(winner) + " がポットの" +
+                    std::to_string(pot) + " を獲得");
+        }
+        //ret.emplace_back(
+        //        "player" + std::to_string(result.winner()) + " がポットの" +
+        //        std::to_string(result.pot()) + " を獲得");
         ret.emplace_back("======================");
         return ret;
     }
