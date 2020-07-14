@@ -18,7 +18,7 @@ namespace poker {
                   bookmark_(hole_cards.size()), bb_(bb) {
 
         for (int id = 0; id < hole_cards.size(); ++id) {
-            players_.emplace_back(id, stack, hole_cards[id]);
+            players_.emplace_back(id, stack, hole_cards[id], hole_cards.size());
         }
         assert(players_.size() >= 2);
         players_[0].Bet(bb / 2);

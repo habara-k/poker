@@ -9,12 +9,13 @@ TEST(player, Player) {
     int id = 0;
     int stack = 10000;
     HoleCards cards{Card(19), Card(20)};
-    Player player(id, stack, cards);
+    Player player(id, stack, cards, 2);
     EXPECT_EQ(player.id(), id);
     EXPECT_EQ(player.stack(), stack);
     EXPECT_EQ(player.bet(), 0);
     EXPECT_EQ(player.folded(), false);
     EXPECT_EQ(player.hole_cards(), cards);
+    EXPECT_EQ(player.position(), Position::kSB);
 
     int bet = 200;
     player.Bet(bet);

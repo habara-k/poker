@@ -123,6 +123,19 @@ namespace poker {
         }
     }
 
+    std::string Visualizer::ToString(Position position) {
+        switch (position) {
+            case Position::kSB:
+                return "(SB)";
+            case Position::kBB:
+                return "(BB)";
+            case Position::kBTN:
+                return "(BTN)";
+            case Position::kOther:
+                return "";
+        }
+    }
+
     std::string Visualizer::ToString(const Action& action) {
         ActionType type = action.type();
         if (type == ActionType::kBet or type == ActionType::kRaise) {
@@ -154,7 +167,7 @@ namespace poker {
 
     std::array<std::string,4> Visualizer::ToStrings(const HandCards& cards) {
         std::array<std::string, 4> ret;
-        for (const std::optional<Card>& card : cards) {
+        for (const Card& card : cards) {
             std::array<std::string, 4> strs = ToStrings(card);
             for (int i = 0; i < 4; ++i) {
                 ret[i] += strs[i];
@@ -176,7 +189,7 @@ namespace poker {
 
     std::vector<std::string> Visualizer::ToStrings(const Player& player) {
         std::vector<std::string> ret;
-        ret.emplace_back("player" + std::to_string(player.id()));
+        ret.emplace_back("player" + std::to_string(player.id()) + ' ' + ToString(player.position()));
         ret.back().resize(15, ' ');
         ret.emplace_back("---------------");
         if (player.folded()) {
@@ -216,8 +229,8 @@ namespace poker {
 
     std::vector<std::string> Visualizer::ToStrings(const std::vector<Player>& players) {
         std::vector<std::string> ret(9);
-        for (int i = 0; i < players.size(); ++i) {
-            std::vector<std::string> strs = ToStrings(players[i]);
+        for (const Player player : players) {
+            std::vector<std::string> strs = ToStrings(player);
             for (int i = 0; i < 9; ++i) {
                 ret[i] += strs[i];
             }
@@ -225,10 +238,10 @@ namespace poker {
         return ret;
     }
 
-    std::vector<std::string> Visualizer::ToStrings(const std::vector<Player>& players, int player_id) {
+    std::vector<std::string> Visualizer::ToStrings(const std::vector<Player>& players, int your_id) {
         std::vector<std::string> ret(10);
-        for (int i = 0; i < players.size(); ++i) {
-            std::vector<std::string> strs = ToStrings(players[i], i == player_id);
+        for (int player_id = 0; player_id < players.size(); ++player_id) {
+            std::vector<std::string> strs = ToStrings(players[player_id], player_id == your_id);
             for (int i = 0; i < 10; ++i) {
                 ret[i] += strs[i];
             }

@@ -24,6 +24,7 @@ namespace poker {
         [[nodiscard]] static std::string ToString(Stage stage);
         [[nodiscard]] static std::string ToString(HandCategory category);
         [[nodiscard]] static std::string ToString(ActionType action_type);
+        [[nodiscard]] static std::string ToString(Position position);
         [[nodiscard]] static std::string ToString(const Action& action);
         [[nodiscard]] static std::string ToString(const Record& record);
         [[nodiscard]] static std::array<std::string,4> ToStrings(const HoleCards& cards);
@@ -32,7 +33,7 @@ namespace poker {
         [[nodiscard]] static std::vector<std::string> ToStrings(const Player& player);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Player& player, bool is_you);
         [[nodiscard]] static std::vector<std::string> ToStrings(const std::vector<Player>& players);
-        [[nodiscard]] static std::vector<std::string> ToStrings(const std::vector<Player>& players, int player_id);
+        [[nodiscard]] static std::vector<std::string> ToStrings(const std::vector<Player>& players, int your_id);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Hand& hand);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Result& result);
         [[nodiscard]] static std::vector<std::string> ToStrings(const Observable& observable);

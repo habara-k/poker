@@ -9,6 +9,7 @@
 
 namespace poker {
     Environment::Environment(const std::vector<std::string> &agent_types) {
+        assert(2 <= agent_types.size() and agent_types.size() <= 9);
         for (const std::string& type : agent_types) {
             if (type == "check_call") {
                 auto agent = std::make_unique<CheckCallAgent>();
