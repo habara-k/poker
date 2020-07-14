@@ -10,7 +10,7 @@ int main() {
     std::streambuf* old = std::clog.rdbuf(log.rdbuf());
     std::clog.rdbuf(old);
 
-    Environment env({"check_call", "user", "check_call", "check_call", "check_call", "check_call"});
+    Environment env({"check_fold", "user", "check_fold", "check_call", "check_fold", "check_call"});
     env.Run();
 
     return 0;

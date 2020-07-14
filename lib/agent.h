@@ -25,6 +25,15 @@ namespace poker {
         void Reward(const Observable& observable) final;
     };
 
+    class CheckFoldAgent : public Agent {
+    public:
+        Action ChooseAction(
+                const Observable &observable,
+                const std::vector<ActionRange> &possible_actions) final;
+
+        void Reward(const Observable& observable) final;
+    };
+
     class UserAgent : public Agent {
     public:
         Action ChooseAction(

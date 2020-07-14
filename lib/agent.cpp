@@ -11,17 +11,34 @@ namespace poker {
             const Observable& observable,
             const std::vector<ActionRange>& possible_actions) {
         for (const auto& action_range : possible_actions) {
+            if (action_range.type() == ActionType::kCheck) {
+                return Action(ActionType::kCheck);
+            }
             if (action_range.type() == ActionType::kCall) {
                 return Action(ActionType::kCall);
-            }
-            else if (action_range.type() == ActionType::kCheck) {
-                return Action(ActionType::kCheck);
             }
         }
         assert(false);
     }
 
     void CheckCallAgent::Reward(const Observable& observable) {
+    }
+
+    Action CheckFoldAgent::ChooseAction(
+            const Observable& observable,
+            const std::vector<ActionRange>& possible_actions) {
+        for (const auto& action_range : possible_actions) {
+            if (action_range.type() == ActionType::kCheck) {
+                return Action(ActionType::kCheck);
+            }
+            if (action_range.type() == ActionType::kFold) {
+                return Action(ActionType::kFold);
+            }
+        }
+        assert(false);
+    }
+
+    void CheckFoldAgent::Reward(const Observable& observable) {
     }
 
     Action UserAgent::ChooseAction(

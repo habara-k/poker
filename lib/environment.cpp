@@ -14,6 +14,9 @@ namespace poker {
             if (type == "check_call") {
                 auto agent = std::make_unique<CheckCallAgent>();
                 agents.emplace_back(std::move(agent));
+            } else if (type == "check_fold") {
+                    auto agent = std::make_unique<CheckFoldAgent>();
+                    agents.emplace_back(std::move(agent));
             } else if (type == "user") {
                 auto agent = std::make_unique<UserAgent>();
                 agents.emplace_back(std::move(agent));
