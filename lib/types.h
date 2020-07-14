@@ -11,8 +11,8 @@ namespace poker {
     using CommunityCards = std::array<std::optional<Card>,5>;
     using HoleCards = std::array<std::optional<Card>,2>;
     using HandCards = std::array<Card,5>;
-    using Trajectory = std::vector<Record>;
-    using TrajectoryIterator = std::vector<Record>::const_iterator;
+    using History = std::vector<Record>;
+    using HistoryIterator = std::vector<Record>::const_iterator;
 }
 
 #endif //POKER_TYPES_H

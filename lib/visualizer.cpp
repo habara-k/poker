@@ -146,12 +146,7 @@ namespace poker {
     }
 
     std::string Visualizer::ToString(const Record& record) {
-        RecordType type = record.type();
-        if (type == RecordType::kStage) {
-            return "- " + ToString(record.stage());
-        } else {
-            return "- player" + std::to_string(record.player_id()) + ' ' + ToString(record.action());
-        }
+        return "- player" + std::to_string(record.player_id()) + ' ' + ToString(record.action());
     }
 
     std::array<std::string,4> Visualizer::ToStrings(const HoleCards& cards) {
@@ -265,9 +260,6 @@ namespace poker {
                     "player" + std::to_string(winner) + " がポットの" +
                     std::to_string(pot) + " を獲得");
         }
-        //ret.emplace_back(
-        //        "player" + std::to_string(result.winner()) + " がポットの" +
-        //        std::to_string(result.pot()) + " を獲得");
         ret.emplace_back("======================");
         return ret;
     }
@@ -276,7 +268,7 @@ namespace poker {
         std::vector<std::string> ret;
         ret.emplace_back("======================");
         ret.emplace_back("history:");
-        for (auto it = observable.trajectory(); it != observable.trajectory_end(); ++it) {
+        for (auto it = observable.history(); it != observable.history_end(); ++it) {
             ret.emplace_back(ToString(*it));
         }
         ret.emplace_back("-----------------");

@@ -25,11 +25,11 @@ namespace poker {
     Stage Observable::stage() const {
         return state_.stage();
     }
-    std::vector<Record>::const_iterator Observable::trajectory() const {
-        return state_.trajectory(player_id_);
+    std::vector<Record>::const_iterator Observable::history() const {
+        return state_.history(player_id_);
     }
-    std::vector<Record>::const_iterator Observable::trajectory_end() const {
-        return state_.trajectory_end();
+    std::vector<Record>::const_iterator Observable::history_end() const {
+        return state_.history_end();
     }
     const std::optional<Result>& Observable::result() const {
         return state_.result();

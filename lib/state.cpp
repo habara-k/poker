@@ -26,7 +26,6 @@ namespace poker {
         max_bet_ = bb;
         min_raise_size_ = bb;
         next_player_id_ = players_.size() == 2 ? 0 : 2;
-        trajectory_.emplace_back(stage_);
 
         Show();
     }
@@ -78,8 +77,8 @@ namespace poker {
 
         std::clog << "player" << player_id << " " << Visualizer::ToString(action) << std::endl;
 
-        bookmark_[player_id] = trajectory_.size();
-        trajectory_.emplace_back(player_id, action);
+        bookmark_[player_id] = history_.size();
+        history_.emplace_back(player_id, action);
 
 
         switch (action.type()) {
@@ -191,11 +190,11 @@ namespace poker {
     Stage State::stage() const {
         return stage_;
     }
-    TrajectoryIterator State::trajectory(int player_id) const {
-        return trajectory_.begin() + bookmark_[player_id];
+    HistoryIterator State::history(int player_id) const {
+        return history_.begin() + bookmark_[player_id];
     }
-    TrajectoryIterator State::trajectory_end() const {
-        return trajectory_.end();
+    HistoryIterator State::history_end() const {
+        return history_.end();
     }
     const std::optional<Result>& State::result() const {
         return result_;
@@ -205,7 +204,6 @@ namespace poker {
         assert(remained_players() == 1);
 
         stage_ = Stage::kEndHidden;
-        trajectory_.emplace_back(stage_);
 
         Show();
 
@@ -231,7 +229,6 @@ namespace poker {
         assert(remained_players() > 1);
 
         stage_ = Stage::kShowdown;
-        trajectory_.emplace_back(stage_);
 
         Show();
 
@@ -313,17 +310,14 @@ namespace poker {
         switch (stage_) {
             case Stage::kPreFlop:
                 stage_ = Stage::kFlop;
-                trajectory_.emplace_back(stage_);
                 Show();
                 break;
             case Stage::kFlop:
                 stage_ = Stage::kTurn;
-                trajectory_.emplace_back(stage_);
                 Show();
                 break;
             case Stage::kTurn:
                 stage_ = Stage::kRiver;
-                trajectory_.emplace_back(stage_);
                 Show();
                 break;
             case Stage::kRiver:

@@ -21,9 +21,9 @@ namespace poker {
         [[nodiscard]] CommunityCards community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
-        [[nodiscard]] TrajectoryIterator trajectory() const;
-        [[nodiscard]] TrajectoryIterator trajectory_end() const;
-        //[[nodiscard]] const Trajectory& trajectory() const;
+        [[nodiscard]] HistoryIterator history() const;
+        [[nodiscard]] HistoryIterator history_end() const;
+        //[[nodiscard]] const History& history() const;
         [[nodiscard]] const std::optional<Result>& result() const;
     };
 }

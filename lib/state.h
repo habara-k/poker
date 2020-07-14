@@ -22,7 +22,7 @@ namespace poker {
         int next_player_id_;
         bool someone_all_in_;
         std::optional<int> terminal_player_id_;
-        Trajectory trajectory_;
+        History history_;
         std::vector<int> bookmark_;
         std::optional<Result> result_;
         const int bb_;
@@ -42,8 +42,8 @@ namespace poker {
         [[nodiscard]] CommunityCards community_cards() const;
         [[nodiscard]] int pot() const;
         [[nodiscard]] Stage stage() const;
-        [[nodiscard]] TrajectoryIterator trajectory(int player_id) const;
-        [[nodiscard]] TrajectoryIterator trajectory_end() const;
+        [[nodiscard]] HistoryIterator history(int player_id) const;
+        [[nodiscard]] HistoryIterator history_end() const;
         [[nodiscard]] const std::optional<Result>& result() const;
 
     private:
