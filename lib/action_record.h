@@ -1,5 +1,5 @@
-#ifndef POKER_RECORD_H
-#define POKER_RECORD_H
+#ifndef POKER_ACTION_RECORD_H
+#define POKER_ACTION_RECORD_H
 
 #include <vector>
 
@@ -7,15 +7,15 @@
 #include "stage.h"
 
 namespace poker {
-    class Record {
+    class ActionRecord {
         const int player_id_;
         const Action action_;
     public:
-        Record(int player_id, const Action& action);
+        ActionRecord(int player_id, const Action& action);
 
         [[nodiscard]] int player_id() const;
         [[nodiscard]] Action action() const;
     };
 }
 
-#endif //POKER_RECORD_H
+#endif //POKER_ACTION_RECORD_H

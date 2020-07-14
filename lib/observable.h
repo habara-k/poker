@@ -23,7 +23,6 @@ namespace poker {
         [[nodiscard]] Stage stage() const;
         [[nodiscard]] HistoryIterator history() const;
         [[nodiscard]] HistoryIterator history_end() const;
-        //[[nodiscard]] const History& history() const;
         [[nodiscard]] const std::optional<Result>& result() const;
     };
 }

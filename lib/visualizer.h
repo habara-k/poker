@@ -8,7 +8,7 @@
 #include "stage.h"
 #include "hand.h"
 #include "action.h"
-#include "record.h"
+#include "action_record.h"
 #include "player.h"
 #include "result.h"
 #include "observable.h"
@@ -26,7 +26,7 @@ namespace poker {
         [[nodiscard]] static std::string ToString(ActionType action_type);
         [[nodiscard]] static std::string ToString(Position position);
         [[nodiscard]] static std::string ToString(const Action& action);
-        [[nodiscard]] static std::string ToString(const Record& record);
+        [[nodiscard]] static std::string ToString(const ActionRecord& record);
         [[nodiscard]] static std::array<std::string,4> ToStrings(const HoleCards& cards);
         [[nodiscard]] static std::array<std::string,4> ToStrings(const HandCards& cards);
         [[nodiscard]] static std::array<std::string,4> ToStrings(const CommunityCards& cards);

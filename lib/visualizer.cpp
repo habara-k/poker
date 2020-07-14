@@ -145,7 +145,7 @@ namespace poker {
         }
     }
 
-    std::string Visualizer::ToString(const Record& record) {
+    std::string Visualizer::ToString(const ActionRecord& record) {
         return "- player" + std::to_string(record.player_id()) + ' ' + ToString(record.action());
     }
 

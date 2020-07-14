@@ -7,7 +7,7 @@
 #include "player.h"
 #include "action.h"
 #include "action_range.h"
-#include "record.h"
+#include "action_record.h"
 #include "stage.h"
 #include "result.h"
 
