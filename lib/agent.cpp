@@ -47,11 +47,9 @@ namespace poker {
 
         // Show Observable
 
-        std::cout << "======================" << std::endl;
         for (const std::string& str : Visualizer::ToStrings(observable)) {
             std::cout << str << std::endl;
         }
-        std::cout << "======================" << std::endl;
 
         // Choose Action
 
@@ -110,10 +108,8 @@ namespace poker {
     }
 
     void UserAgent::Reward(const Observable& observable) {
-        std::cout << "========Result========" << std::endl;
-        for (const std::string& str : Visualizer::ToStrings(observable.result())) {
+        for (const std::string& str : Visualizer::ToStrings(observable)) {
             std::cout << str << std::endl;
         }
-        std::cout << "======================" << std::endl;
     }
 }

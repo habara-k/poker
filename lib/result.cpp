@@ -3,8 +3,6 @@
 #include <cassert>
 
 namespace poker {
-    Result::Result() {}
-
     Result::Result(Stage stage, int winner, int pot)
             : stage_(stage), winner_(winner), pot_(pot) {
         assert(stage == Stage::kEndHidden);

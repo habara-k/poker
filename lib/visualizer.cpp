@@ -251,6 +251,7 @@ namespace poker {
 
     std::vector<std::string> Visualizer::ToStrings(const Result& result) {
         std::vector<std::string> ret;
+        ret.emplace_back("========Result========");
         if (result.stage() == Stage::kShowdown) {
             for (const auto& [id, hand] : result.hands()) {
                 ret.emplace_back("player" + std::to_string(id) + ": " + ToString(hand.category()));
@@ -262,11 +263,13 @@ namespace poker {
         ret.emplace_back(
                 "player" + std::to_string(result.winner()) + " がポットの" +
                 std::to_string(result.pot()) + " を獲得");
+        ret.emplace_back("======================");
         return ret;
     }
 
     std::vector<std::string> Visualizer::ToStrings(const Observable& observable) {
         std::vector<std::string> ret;
+        ret.emplace_back("======================");
         ret.emplace_back("history:");
         for (auto it = observable.trajectory(); it != observable.trajectory_end(); ++it) {
             ret.emplace_back(ToString(*it));
@@ -280,6 +283,13 @@ namespace poker {
         }
         for (const std::string& str : ToStrings(observable.players(), observable.player_id())) {
             ret.emplace_back(str);
+        }
+        ret.emplace_back("======================");
+
+        if (observable.result()) {
+            for (const std::string& str : ToStrings(observable.result().value())) {
+                ret.emplace_back(str);
+            }
         }
         return ret;
     }

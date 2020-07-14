@@ -13,7 +13,6 @@ namespace poker {
         int pot_;
         std::optional<std::map<int,Hand>> hands_;
     public:
-        Result();
         Result(Stage stage, int winner, int pot);
         Result(Stage stage, int winner, int pot, std::map<int,Hand> hands);
 

@@ -1,11 +1,9 @@
 #include "observable.h"
 
 namespace poker {
-    Observable::Observable(const State &state)
-            : state_(state), players_(state.players()) {}
-
-    Observable::Observable(const State& state, int player_id)
+    Observable::Observable(const State& state, int player_id, bool hide)
             : state_(state), players_(state.players()), player_id_(player_id) {
+        if (!hide) return;
         for (int i = 0; i < players_.size(); ++i) {
             if (i == player_id) continue;
             players_[i].HideHoleCards();
@@ -33,7 +31,7 @@ namespace poker {
     std::vector<Record>::const_iterator Observable::trajectory_end() const {
         return state_.trajectory_end();
     }
-    const Result& Observable::result() const {
+    const std::optional<Result>& Observable::result() const {
         return state_.result();
     }
 }

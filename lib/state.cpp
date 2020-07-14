@@ -26,6 +26,7 @@ namespace poker {
         max_bet_ = bb;
         min_raise_size_ = bb;
         next_player_id_ = players_.size() == 2 ? 0 : 2;
+        trajectory_.emplace_back(stage_);
 
         Show();
     }
@@ -212,7 +213,7 @@ namespace poker {
     TrajectoryIterator State::trajectory_end() const {
         return trajectory_.end();
     }
-    const Result& State::result() const {
+    const std::optional<Result>& State::result() const {
         return result_;
     }
 
@@ -237,11 +238,9 @@ namespace poker {
             player.Win(pot_);
         }
 
-        std::clog << "========Result========" << std::endl;
-        for (const std::string& str : Visualizer::ToStrings(result_)) {
+        for (const std::string& str : Visualizer::ToStrings(result_.value())) {
             std::clog << str << std::endl;
         }
-        std::clog << "======================" << std::endl;
     }
 
     void State::Showdown() {
@@ -273,11 +272,9 @@ namespace poker {
         players_[winner].Win(pot_);
         pot_ = 0;
 
-        std::clog << "========Result========" << std::endl;
-        for (const std::string& str : Visualizer::ToStrings(result_)) {
+        for (const std::string& str : Visualizer::ToStrings(result_.value())) {
             std::clog << str << std::endl;
         }
-        std::clog << "======================" << std::endl;
     }
 
     int State::remained_players() const {

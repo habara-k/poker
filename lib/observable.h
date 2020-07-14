@@ -14,8 +14,7 @@ namespace poker {
         std::vector<Player> players_;
         int player_id_;
     public:
-        Observable(const State& state);
-        Observable(const State& state, int player_id);
+        Observable(const State& state, int player_id, bool hide = true);
 
         [[nodiscard]] int player_id() const;
         [[nodiscard]] const std::vector<Player>& players() const;
@@ -25,7 +24,7 @@ namespace poker {
         [[nodiscard]] TrajectoryIterator trajectory() const;
         [[nodiscard]] TrajectoryIterator trajectory_end() const;
         //[[nodiscard]] const Trajectory& trajectory() const;
-        [[nodiscard]] const Result& result() const;
+        [[nodiscard]] const std::optional<Result>& result() const;
     };
 }
 

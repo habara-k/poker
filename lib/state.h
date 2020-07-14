@@ -24,7 +24,7 @@ namespace poker {
         std::optional<int> terminal_player_id_;
         Trajectory trajectory_;
         std::vector<int> bookmark_;
-        Result result_;
+        std::optional<Result> result_;
         const int bb_;
 
     public:
@@ -46,7 +46,7 @@ namespace poker {
         //[[nodiscard]] const std::vector<Record>& trajectory() const;
         [[nodiscard]] TrajectoryIterator trajectory(int player_id) const;
         [[nodiscard]] TrajectoryIterator trajectory_end() const;
-        [[nodiscard]] const Result& result() const;
+        [[nodiscard]] const std::optional<Result>& result() const;
 
     private:
         [[nodiscard]] int remained_players() const;
