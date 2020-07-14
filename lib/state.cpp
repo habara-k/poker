@@ -44,18 +44,21 @@ namespace poker {
             action_range.emplace_back(ActionType::kFold);
             action_range.emplace_back(ActionType::kCall);
         }
-        if (max_bet_ == 0) {
+        if (max_bet_ == 0 and player.stack() > 0) {
             action_range.emplace_back(ActionType::kBet, min_raise_size_, player.stack());
         }
-        if (max_bet_ > 0) {
-            action_range.emplace_back(ActionType::kRaise, min_raise_size_,
-                    player.stack() - max_bet_ + player.bet());
+        if (int min = min_raise_size_,
+                max = player.stack() - max_bet_ + player.bet();
+                max_bet_ > 0 and min <= max) {
+            action_range.emplace_back(ActionType::kRaise, min, max);
         }
-        action_range.emplace_back(ActionType::kAllIn);
+        if (player.stack() - max_bet_ + player.bet() > 0) {
+            action_range.emplace_back(ActionType::kAllIn);
+        }
         return action_range;
     }
 
-    void State::TakeAction(int player_id, const Action& action) {
+    void State::TakeAction(int player_id, Action action) {
         auto possible_actions = PossibleActions();
         assert(std::any_of(possible_actions.begin(), possible_actions.end(),
                 [&action](ActionRange& range){ return range.Valid(action); }));
@@ -65,12 +68,18 @@ namespace poker {
         assert(player_id == next_player_id_);
         assert(!terminal_player_id_ or terminal_player_id_.value() != player_id);
 
+        Player& player = players_[player_id];
+
+        // Raise max -> AllIn
+        if (action.type() == ActionType::kRaise and max_bet_ + action.size() - player.bet() == player.stack()) {
+            action = Action(ActionType::kAllIn);
+        }
+
         std::clog << "player" << player_id << " " << Visualizer::ToString(action) << std::endl;
 
         bookmark_[player_id] = trajectory_.size();
         trajectory_.emplace_back(player_id, action);
 
-        Player& player = players_[player_id];
 
         switch (action.type()) {
             case ActionType::kCheck:

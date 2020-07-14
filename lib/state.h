@@ -36,7 +36,7 @@ namespace poker {
         [[nodiscard]] int next_player_id() const;
         [[nodiscard]] std::vector<ActionRange> PossibleActions() const;
 
-        void TakeAction(int player_id, const Action& action);
+        void TakeAction(int player_id, Action action);
 
         [[nodiscard]] const std::vector<Player>& players() const;
         [[nodiscard]] CommunityCards community_cards() const;

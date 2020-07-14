@@ -11,6 +11,7 @@ namespace poker {
     ActionRange::ActionRange(ActionType type, int min, int max)
             : type_(type), min_(min), max_(max) {
         assert(type == ActionType::kBet or type == ActionType::kRaise);
+        assert(min <= max);
     }
 
     ActionType ActionRange::type() const {

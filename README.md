@@ -6,14 +6,27 @@
 
 ## Build
 
-1. clone this repository
-2. `mkdir build`
-3. `cd build`
-4. `cmake ..`
-5. `make`
+Clone this repository first. Then,
+
+```shell script
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
 
 ## Quick Start
 
-1. `cd build`
-2. `./poker.out`
+```shell script
+$ cd build
+$ ./poker.out
+```
 
+## Note
+
+Everyone comes into the game with the same stack.
+There is no side pot.
+
+And there is no chop.
+If more than one player wins, one of them wins.
+We do not consider fractions of the pot.
